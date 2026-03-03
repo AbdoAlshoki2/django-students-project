@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .search-form {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-form input[type="text"] {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-form input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-form select {
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .search-form select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-form button {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .search-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .students-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .student-link {
+            display: block;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #333;
+            font-size: 17px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .student-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .student-link .name {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .student-link .details {
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .no-results {
+            background: white;
+            padding: 50px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .no-results h2 {
+            color: #666;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .no-results p {
+            color: #999;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Directory</h1>
+
+        <form method="get" class="search-form">
+            <input type="text" name="name" placeholder="Search by name..." value="{{ NameSearch }}">
+            <select name="class">
+                <option value="All" {% if SelectedClass == "All" %}selected{% endif %}>All Classes</option>
+                <option value="2023" {% if SelectedClass == "2023" %}selected{% endif %}>Class 2023</option>
+                <option value="2024" {% if SelectedClass == "2024" %}selected{% endif %}>Class 2024</option>
+                <option value="2025" {% if SelectedClass == "2025" %}selected{% endif %}>Class 2025</option>
+                <option value="2026" {% if SelectedClass == "2026" %}selected{% endif %}>Class 2026</option>
+            </select>
+
+            <select name="department">
+                <option value="All" {% if SelectedDepartment == "All" %}selected{% endif %}>All Departments</option>
+                <option value="IT" {% if SelectedDepartment == "IT" %}selected{% endif %}>IT</option>
+                <option value="CS" {% if SelectedDepartment == "CS" %}selected{% endif %}>CS</option>
+                <option value="SE" {% if SelectedDepartment == "SE" %}selected{% endif %}>SE</option>
+                <option value="AI" {% if SelectedDepartment == "AI" %}selected{% endif %}>AI</option>
+                <option value="DS" {% if SelectedDepartment == "DS" %}selected{% endif %}>DS</option>
+                <option value="IS" {% if SelectedDepartment == "IS" %}selected{% endif %}>IS</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+
+        {% if students %}
+            <div class="students-list">
+                {% for student in students %}
+                    <a href="{% url 'show_student' student.name %}" class="student-link">
+                        <span class="name">{{ student.name }}</span>
+                        <span class="details">- {{ student.age }} years - {{ student.department }} - Class of {{ student.class }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-results">
+                <h2>No students found</h2>
+                <p>Try adjusting your search filters</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
