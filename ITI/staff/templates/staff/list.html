@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Staff{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Staff <span class="count-badge">{{ instructors|length }}</span></h1>
+    <a href="{% url 'add_instructor' %}" class="btn btn-primary">+ Add Instructor</a>
+</div>
+
+<form method="get" class="filter-card">
+    <div class="filter-group">
+        <label>Search Name</label>
+        <input type="text" name="name" placeholder="e.g. John" value="{{ name_search }}">
+    </div>
+    <div class="filter-group">
+        <label>Department</label>
+        <select name="department">
+            <option value="">All Departments</option>
+            {% for dept in departments %}
+            <option value="{{ dept }}" {% if dept == selected_department %}selected{% endif %}>{{ dept }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="filter-group" style="flex: 0; min-width: auto;">
+        <label>&nbsp;</label>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+{% if instructors %}
+    {% for instructor in instructors %}
+    <a href="{% url 'show_instructor' instructor.pk %}" class="list-row">
+        <div class="list-row-title">{{ instructor.name }}</div>
+        <div class="list-row-meta">{{ instructor.department }} &middot; {{ instructor.email }}</div>
+    </a>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">
+        <h2>No instructors found</h2>
+        <p>Try adjusting your search filters</p>
+    </div>
+{% endif %}
+{% endblock %}

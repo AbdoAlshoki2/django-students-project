@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ instructor.name }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'list_instructors' %}" class="back-link">&#8592; Back to Staff</a>
+
+<div class="detail-card">
+    <div style="display:flex; align-items:center; gap:28px; flex-wrap:wrap;">
+        {% if instructor.photo %}
+        <img src="{{ instructor.photo.url }}" alt="{{ instructor.name }}"
+             style="width:96px; height:96px; border-radius:50%; object-fit:cover; border:3px solid #1e3a5f; flex-shrink:0;">
+        {% else %}
+        <div style="width:96px; height:96px; border-radius:50%; background:#1e3a5f; display:flex; align-items:center; justify-content:center; font-size:2.2rem; flex-shrink:0; color:#38bdf8;">{{ instructor.name|first }}</div>
+        {% endif %}
+        <h1 class="page-title">{{ instructor.name }}</h1>
+    </div>
+    <div class="detail-grid">
+        <div class="detail-field">
+            <label>Email</label>
+            <span>{{ instructor.email }}</span>
+        </div>
+        <div class="detail-field">
+            <label>Department</label>
+            <span>{{ instructor.department }}</span>
+        </div>
+    </div>
+</div>
+
+<p class="section-title">Courses Teaching <span class="count-badge">{{ courses|length }}</span></p>
+
+{% if courses %}
+    {% for course in courses %}
+    <a href="{% url 'course_detail' course.pk %}" class="list-row">
+        <div class="list-row-title">{{ course.name }} <span class="tag">{{ course.code }}</span></div>
+        <div class="list-row-meta">{{ course.credits }} credits &middot; {{ course.description|truncatechars:80 }}</div>
+    </a>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">
+        <h2>No courses assigned</h2>
+        <p>This instructor is not teaching any courses yet</p>
+    </div>
+{% endif %}
+{% endblock %}

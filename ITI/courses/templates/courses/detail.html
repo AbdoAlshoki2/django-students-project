@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.name }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'list_courses' %}" class="back-link">&#8592; Back to Courses</a>
+
+<div class="detail-card">
+    <h1 class="page-title">{{ course.name }} <span class="tag">{{ course.code }}</span></h1>
+    <div class="detail-grid">
+        <div class="detail-field">
+            <label>Credits</label>
+            <span>{{ course.credits }}</span>
+        </div>
+        <div class="detail-field">
+            <label>Instructor</label>
+            {% if course.instructor %}
+            <span>
+                <a href="{% url 'show_instructor' course.instructor.pk %}" class="rel-link">{{ course.instructor.name }}</a>
+            </span>
+            {% else %}
+            <span style="color:#475569;">No instructor assigned</span>
+            {% endif %}
+        </div>
+        <div class="detail-field">
+            <label>Description</label>
+            <span>{{ course.description }}</span>
+        </div>
+    </div>
+</div>
+
+<p class="section-title">Enrolled Students <span class="count-badge">{{ students|length }}</span></p>
+
+{% if students %}
+    {% for student in students %}
+    <a href="{% url 'show_student' student.pk %}" class="list-row">
+        <div class="list-row-title">{{ student.name }}</div>
+        <div class="list-row-meta">{{ student.department }} &middot; Class of {{ student.class_year }} &middot; {{ student.email }}</div>
+    </a>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">
+        <h2>No students enrolled</h2>
+        <p>No one has enrolled in this course yet</p>
+    </div>
+{% endif %}
+{% endblock %}

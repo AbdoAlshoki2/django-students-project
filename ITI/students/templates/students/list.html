@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Students{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Students <span class="count-badge">{{ students|length }}</span></h1>
+    <a href="{% url 'add_student' %}" class="btn btn-primary">+ Add Student</a>
+</div>
+
+<form method="get" class="filter-card">
+    <div class="filter-group">
+        <label>Search Name</label>
+        <input type="text" name="name" placeholder="e.g. Ahmed" value="{{ name_search }}">
+    </div>
+    <div class="filter-group">
+        <label>Department</label>
+        <select name="department">
+            <option value="">All Departments</option>
+            {% for dept in departments %}
+            <option value="{{ dept }}" {% if dept == selected_department %}selected{% endif %}>{{ dept }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="filter-group">
+        <label>Class Year</label>
+        <select name="class_year">
+            <option value="">All Years</option>
+            {% for year in class_years %}
+            <option value="{{ year }}" {% if year == selected_class_year %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="filter-group" style="flex: 0; min-width: auto;">
+        <label>&nbsp;</label>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+{% if students %}
+    {% for student in students %}
+    <a href="{% url 'show_student' student.pk %}" class="list-row">
+        <div class="list-row-title">{{ student.name }}</div>
+        <div class="list-row-meta">{{ student.department }} &middot; Class of {{ student.class_year }} &middot; {{ student.email }}</div>
+    </a>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">
+        <h2>No students found</h2>
+        <p>Try adjusting your search filters</p>
+    </div>
+{% endif %}
+{% endblock %}
